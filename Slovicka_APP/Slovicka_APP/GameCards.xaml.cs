@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Slovicka_APP.Models;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace Slovicka_APP
     public partial class GameCards : ContentPage
     {
 
-        public GameCards()
+        public GameCards(List<Translate> gameList, bool translate, string firstLang, string secondLang)
         {
             InitializeComponent();
         }       

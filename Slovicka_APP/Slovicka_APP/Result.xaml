@@ -26,14 +26,14 @@
             <Frame x:Name="frame" Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" BackgroundColor="{StaticResource app_color_main}" CornerRadius="20"/>
             <Label x:Name="lb_endgame" Grid.Row="1" Grid.Column="1" Text="KONEC HRY" TextColor="{StaticResource app_color_second}" FontSize="40" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Label x:Name="lb_score" Grid.Row="2" Grid.Column="1" Text="Skóre: X/XX" TextColor="{StaticResource app_color_second}" FontSize="30" HorizontalOptions="Center" VerticalOptions="Start"/>
-            <Label x:Name="lb_percentage" Grid.Row="2" Grid.Column="1" Text="Úspěšnost: XXX%" TextColor="{StaticResource app_color_second}" FontSize="30" HorizontalOptions="Center" VerticalOptions="End"/>
+            <Label x:Name="lb_successRate" Grid.Row="2" Grid.Column="1" Text="Úspěšnost: XXX%" TextColor="{StaticResource app_color_second}" FontSize="30" HorizontalOptions="Center" VerticalOptions="End"/>
 
-            <Image Grid.Row="3" Grid.Column="1" Source="trophy.png" Margin="0,0,120,0"/>
-            <Image Grid.Row="3" Grid.Column="1" Source="trophy.png" Margin="0"/>
-            <Image Grid.Row="3" Grid.Column="1" Source="trophy.png" Margin="120,0,0,0"/>
+            <Image x:Name="img_trophy0" Grid.Row="3" Grid.Column="1" Source="trophy_gray.png" Margin="0,0,120,0"/>
+            <Image x:Name="img_trophy1" Grid.Row="3" Grid.Column="1" Source="trophy_gray.png" Margin="0"/>
+            <Image x:Name="img_trophy2" Grid.Row="3" Grid.Column="1" Source="trophy_gray.png" Margin="120,0,0,0"/>
 
             <Frame x:Name="frame1" Grid.Row="4" Grid.Column="1" BackgroundColor="{StaticResource app_color_second}" CornerRadius="20" Margin="20"/>
-            <CollectionView x:Name="cv_answers" Grid.Row="4" Grid.Column="1" BackgroundColor="Yellow" Margin="30">
+            <CollectionView x:Name="cv_answers" Grid.Row="4" Grid.Column="1" Margin="30">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid>
@@ -43,9 +43,9 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Grid.Column="0" Text="XXXXX" TextColor="{StaticResource app_color_third}"/>
-                            <Label Grid.Column="1" Text="XXXXX" TextColor="#F80606"/>
-                            <Label Grid.Column="2" Text="XXXXX" TextColor="#04AD33"/>
+                            <Label Grid.Column="0" Text="{Binding FirstWord}" TextColor="{StaticResource app_color_third}"/>
+                            <Label Grid.Column="1" Text="{Binding GroupName}" TextColor="#F80606"/>
+                            <Label Grid.Column="2" Text="{Binding SecondWord}" TextColor="#04AD33"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

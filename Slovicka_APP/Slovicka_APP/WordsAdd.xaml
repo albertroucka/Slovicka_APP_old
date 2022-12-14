@@ -21,24 +21,23 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Entry x:Name="czechWord" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Placeholder="Slovo" Margin="15,0,15,0"/>
-            <Entry x:Name="englishWord" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Placeholder="Překlad" Margin="15,0,15,0"/>
-            <Picker x:Name="pk_group" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Title="Vyberte skupinu" Margin="15,0,15,0"/>
+            <Entry x:Name="firstWord" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Placeholder="Slovo" Margin="15,0,15,0"/>
+            <Entry x:Name="secondWord" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Placeholder="Překlad" Margin="15,0,15,0"/>
+            <Picker x:Name="pk_group" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Title="Vyberte skupinu" ItemDisplayBinding="{Binding GroupName}" Margin="15,0,15,0"/>
             <Button x:Name="btn_save" Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Text="PŘIDAT" TextColor="{StaticResource app_color_second}" FontSize="20" BackgroundColor="{StaticResource app_color_main}" CornerRadius="50" Margin="35,10,35,10" Clicked="btn_save_Clicked"/>
 
             <Frame x:Name="frame" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" BorderColor="{StaticResource app_color_main}" CornerRadius="20" Margin="0"/>
-            <ListView x:Name="lv_groups" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" BackgroundColor="Yellow" Margin="15">
+            <ListView x:Name="lv_groups" Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2" ItemSelected="lv_groups_ItemSelected" Margin="15">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout>
-                                <Label Text="XXX" FontSize="20" VerticalOptions="CenterAndExpand"/>
+                                <Label Text="{Binding GroupName}" FontSize="20" VerticalOptions="CenterAndExpand"/>
                             </StackLayout>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-            
         </Grid>
     </ContentPage.Content>
 </ContentPage>
