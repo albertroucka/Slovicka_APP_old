@@ -30,6 +30,25 @@ namespace Slovicka_APP
             pk_secondLang.ItemsSource = languages;
         }
 
+        private void btn_resetStats_Clicked(object sender, EventArgs e)
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                selectedGroup.NumberOfExercises = 0; selectedGroup.SuccessRate = 100;
+                conn.CreateTable<Group>();
+                int rows = conn.Update(selectedGroup);
+                if (rows > 0)
+                {
+                    DisplayAlert("Úspěch", "Statistiky byly úspěšně smazány!", "Ok");
+                    Navigation.PopAsync();
+                }
+                else
+                {
+                    DisplayAlert("Chyba", "Statistiky se nepovedlo smazat!", "Ok");
+                }
+            }
+        }
+
         private void btn_update_Clicked(object sender, EventArgs e)
         {
             selectedGroup.GroupName = ent_groupName.Text;
@@ -139,6 +158,5 @@ namespace Slovicka_APP
                 }
             }
         }
-
     }
 }

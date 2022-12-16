@@ -1,4 +1,5 @@
 ﻿using Slovicka_APP.Models;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,13 +14,16 @@ namespace Slovicka_APP
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class Result : ContentPage
     {
-        public Result(int points, List<Translate> wrongAnswers)
+        //private List<Translate> wrongAnswers;
+
+        public Result(int points, List<Translate> wrongAnswers, Group selectedGroup)
         {
             InitializeComponent();
             lb_score.Text = $"Skóre: {points}/10";
             double successRate = Convert.ToDouble(points) / 10 * 100;
             lb_successRate.Text = $"Úspěšnost: {successRate}%";
             SetTrophies(successRate);
+            UpdateGroupStats(selectedGroup, successRate);
             cv_answers.ItemsSource = wrongAnswers;
         }
 
@@ -57,7 +61,29 @@ namespace Slovicka_APP
             }
 
             //přidání trofejí do uživatelského účtu
-            //trophiesCount
+            MainClass mainClass = new MainClass();
+            mainClass.UpdateUserStats(trophiesCount);
+        }
+
+        private void UpdateGroupStats(Group selectedGroup, double successRate)
+        {
+            selectedGroup.NumberOfExercises = selectedGroup.NumberOfExercises + 1;
+            selectedGroup.SuccessRate = (selectedGroup.SuccessRate * (selectedGroup.NumberOfExercises-1)  + successRate) / selectedGroup.NumberOfExercises;
+
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                conn.CreateTable<Group>();
+                int rows = conn.Update(selectedGroup);
+                if (rows > 0)
+                {
+                    DisplayAlert("Úspěch", "Statistiky úspěšně!", "Ok");
+                    //Navigation.PopAsync();
+                }
+                else
+                {
+                    DisplayAlert("Chyba", "Statistiky se nepovedlo aktualizovat!", "Ok");
+                }
+            }
         }
 
         private void btn_PlayAgin_Clicked(object sender, EventArgs e)
@@ -68,6 +94,12 @@ namespace Slovicka_APP
         private async void btn_MainMenu_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new MainPage());
+        }
+
+        protected override bool OnBackButtonPressed()
+        {
+            Navigation.PushAsync(new Options());
+            return true;
         }
     }
 }

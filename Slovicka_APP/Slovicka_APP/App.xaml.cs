@@ -17,9 +17,9 @@ namespace Slovicka_APP
 
         public App(string databaseLocation)
         {
+            DatabaseLocation = databaseLocation;
             InitializeComponent();
             MainPage = new NavigationPage(new MainPage());
-            DatabaseLocation = databaseLocation;
         }
 
         protected override void OnStart()

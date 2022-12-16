@@ -55,7 +55,7 @@ namespace Slovicka_APP
                     index = pk_secondLang.SelectedIndex;
                     string SecondLang = pk_firstLang.Items[index];
 
-                    Group group = new Group() { GroupName = ent_groupName.Text, FirstLang = FirstLang, SecondLang = SecondLang, NumberOfExercises = 0, SuccessRate = 0 };
+                    Group group = new Group() { GroupName = ent_groupName.Text, FirstLang = FirstLang, SecondLang = SecondLang, NumberOfExercises = 0, SuccessRate = 100 };
 
                     using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
                     {

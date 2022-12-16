@@ -85,7 +85,7 @@ namespace Slovicka_APP
                     {
                         if (GameList.Count > 2)
                         {
-                            Navigation.PushAsync(new GameOptions(GameList, translate, firstLang, secondLang));
+                            Navigation.PushAsync(new GameOptions(GameList, translate, firstLang, secondLang, pk_groups.SelectedItem as Group));
                         }
                         else
                         {
@@ -107,7 +107,7 @@ namespace Slovicka_APP
                     {
                         if (GameList.Count > 0)
                         {
-                            Navigation.PushAsync(new GameTranslate(GameList, translate, firstLang, secondLang));
+                            Navigation.PushAsync(new GameTranslate(GameList, translate, firstLang, secondLang, pk_groups.SelectedItem as Group));
                         }
                         else
                         {

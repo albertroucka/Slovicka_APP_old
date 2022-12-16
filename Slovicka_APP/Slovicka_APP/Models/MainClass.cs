@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SQLite;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,12 +10,80 @@ namespace Slovicka_APP.Models
 
         public string GetUserName()
         {
-            return "Albert R.";
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                conn.CreateTable<User>();
+                var users = conn.Table<User>().ToList();
+
+                if (users.Count > 0)
+                {
+                    return users[0].UserName;
+                }
+                else
+                {
+                    return "Nepřihlášen";
+                }
+            }
         }
 
         public string GetUserTrophiesCount()
         {
-            return "123";
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                conn.CreateTable<User>();
+                var users = conn.Table<User>().ToList();
+
+                if (users.Count > 0)
+                {
+                    return users[0].NumberOfTrophies.ToString();
+                }
+                else
+                {
+                    return "123";
+                }
+            }
+        }
+
+        public User GetUser()
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                conn.CreateTable<User>();
+                var users = conn.Table<User>().ToList();
+
+                if (users.Count > 0)
+                {
+                    return users[0];
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public bool UpdateUserStats(int trophiesCount)
+        {
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                User user = GetUser();
+
+                if (user != null)
+                {
+                    user.NumberOfTrophies = user.NumberOfTrophies + trophiesCount;
+                    conn.CreateTable<User>();
+                    int rows = conn.Update(user);
+                    if (rows > 0)
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        
+                    }
+                }
+                return true;
+            }
         }
 
         public List<string> GetAllExerciseTypes()

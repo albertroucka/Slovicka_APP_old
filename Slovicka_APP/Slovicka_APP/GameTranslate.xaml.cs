@@ -14,13 +14,14 @@ namespace Slovicka_APP
     public partial class GameTranslate : ContentPage
     {
         Question questions = new Question(); List<Translate> GameList; List<Translate> WrongAnswers = new List<Translate>();
-        int round = 1; int points = 0; string correctAnswer; bool translate;
+        int round = 1; int points = 0; string correctAnswer; bool translate; Group selectedGroup;
 
-        public GameTranslate(List<Translate> gameList, bool translate, string firstLang, string secondLang)
+        public GameTranslate(List<Translate> gameList, bool translate, string firstLang, string secondLang, Group selectedGroup)
         {
             InitializeComponent();
             this.GameList = gameList;
             this.translate = translate;
+            this.selectedGroup = selectedGroup;
 
             if (translate == false)
             {
@@ -68,7 +69,7 @@ namespace Slovicka_APP
 
             if (round > 9)
             {
-                Navigation.PushAsync(new Result(points, WrongAnswers));
+                Navigation.PushAsync(new Result(points, WrongAnswers, selectedGroup));
             }
             else
             {
