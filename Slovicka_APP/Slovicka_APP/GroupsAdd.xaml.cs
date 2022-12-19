@@ -75,6 +75,7 @@ namespace Slovicka_APP
 
                         if (duplicate == false)
                         {
+                            bool result = Firestore.Insert(group).Result;
                             int rows = conn.Insert(group);
                             if (rows > 0)
                             {

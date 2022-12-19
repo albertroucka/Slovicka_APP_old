@@ -1,4 +1,6 @@
-﻿using SQLite;
+﻿using Firebase.Auth;
+using Newtonsoft.Json;
+using SQLite;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -10,6 +12,8 @@ namespace Slovicka_APP.Models
 
         public string GetUserName()
         {
+            //FirebaseSignIn();
+
             using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
             {
                 conn.CreateTable<User>();
@@ -96,6 +100,47 @@ namespace Slovicka_APP.Models
         {
             List<string> Lang = new List<string>() { "Anglicky", "Česky", "Německy" };
             return Lang;
+        }
+
+
+        public async void FirebaseSingUp()
+        {
+            string WebAPIkey = "AIzaSyDcNoIRjoK7vdlwK5_hJcCTjwon27x4nK8";
+
+            try
+            {
+                var authProvider = new FirebaseAuthProvider(new FirebaseConfig(WebAPIkey));
+                var auth = await authProvider.CreateUserWithEmailAndPasswordAsync("admin@slovicka.cz", "Admin123");
+                string getToken = auth.FirebaseToken;
+
+            }
+            catch (FirebaseAuthException)
+            {
+                throw;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        public async void FirebaseSignIn()
+        {
+            string WebAPIkey = "AIzaSyDcNoIRjoK7vdlwK5_hJcCTjwon27x4nK8";
+            var authProvider = new FirebaseAuthProvider(new FirebaseConfig(WebAPIkey));
+
+            try
+            {
+                var auth = await authProvider.SignInWithEmailAndPasswordAsync("admin@slovicka.cz", "Admi123");
+                var content = await auth.GetFreshAuthAsync();
+                var serializedContent = JsonConvert.SerializeObject(content);
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
     }
