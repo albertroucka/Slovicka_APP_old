@@ -7,6 +7,7 @@ namespace Slovicka_APP.Models
 {
     class MainClass
     {
+        FirebaseFirestore ff = new FirebaseFirestore();
 
         public string GetUserName()
         {
@@ -15,7 +16,11 @@ namespace Slovicka_APP.Models
                 conn.CreateTable<User>();
                 var users = conn.Table<User>().ToList();
 
-                if (users.Count > 0)
+                if (ff.GetFirestoreUserAuth())
+                {
+                    return ff.GetFirestoreUserName();
+                }
+                else if (users.Count > 0)
                 {
                     return users[0].UserName;
                 }
@@ -33,13 +38,17 @@ namespace Slovicka_APP.Models
                 conn.CreateTable<User>();
                 var users = conn.Table<User>().ToList();
 
-                if (users.Count > 0)
+                if (ff.GetFirestoreUserAuth())
                 {
-                    return users[0].NumberOfTrophies.ToString();
+                    return ff.GetFirestoreUserTrophies();
+                }
+                else if (users.Count > 0)
+                {
+                    return ff.GetFirestoreUserTrophies();
                 }
                 else
                 {
-                    return "123";
+                    return "???";
                 }
             }
         }
@@ -97,6 +106,5 @@ namespace Slovicka_APP.Models
             List<string> Lang = new List<string>() { "Anglicky", "Česky", "Německy" };
             return Lang;
         }
-
     }
 }

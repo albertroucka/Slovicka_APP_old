@@ -13,10 +13,16 @@ namespace Slovicka_APP
     public partial class MainPage : ContentPage
     {
         MainClass mainClass = new MainClass();
+        FirebaseFirestore ff = new FirebaseFirestore();
 
         public MainPage()
         {
             InitializeComponent();
+            SetValues();
+        }
+
+        public void SetValues()
+        {
             btn_account.Text = mainClass.GetUserName();
             btn_trophies.Text = mainClass.GetUserTrophiesCount();
         }

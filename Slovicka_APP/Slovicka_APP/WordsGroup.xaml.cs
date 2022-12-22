@@ -1,8 +1,10 @@
-﻿using Slovicka_APP.Models;
+﻿using Plugin.CloudFirestore;
+using Slovicka_APP.Models;
 using SQLite;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +16,7 @@ namespace Slovicka_APP
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WordsGroup : ContentPage
     {
-        Group selectedGroup;
+        Group selectedGroup; List<Translate> translatesList; FirebaseFirestore ff = new FirebaseFirestore();
 
         public WordsGroup(Group selectedGroup)
         {
@@ -28,7 +30,7 @@ namespace Slovicka_APP
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            List<Translate> translatesList = new List<Translate>();
+            translatesList = new List<Translate>();
 
             using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
             {
@@ -61,7 +63,108 @@ namespace Slovicka_APP
 
         private void GoToQRCreatePage_Clicked(object sender, EventArgs e)
         {
+            if (translatesList.Count() > 0)
+            {
+                bool bannedChars = false;
+                foreach (var item in translatesList)
+                {
+                    if (item.FirstWord.Contains(";") || item.SecondWord.Contains(";") || item.FirstWord.Contains(":") || item.SecondWord.Contains(":") || item.FirstWord.Contains("-") || item.SecondWord.Contains("-") || item.FirstWord.Contains("+") || item.SecondWord.Contains("+"))
+                    {
+                        bannedChars = true;
+                    }
+                }
 
+                if (bannedChars)
+                {
+                    DisplayAlert("Chyba!", "Skupina obsahuje nepovolené znaky (;:-+)!", "Ok");
+                    Navigation.PopAsync();
+                }
+                else
+                {
+                    string translates = string.Empty;
+                    foreach (var item in translatesList)
+                    {
+                        string s = $"{item.FirstWord}-{item.SecondWord}";
+                        translates = translates + " " + s + " +";
+                    }
+                    translates = translates.Remove(0,1);
+                    translates = translates.Remove(translates.Length - 2);
+
+                    GroupShare groupShare = new GroupShare()
+                    {
+                        AppName = "Slovicka_APP",
+                        AppVersion = "0.5",
+                        GroupCode = "",
+                        GroupName = selectedGroup.GroupName,
+                        FirstLang = selectedGroup.FirstLang,
+                        SecondLang = selectedGroup.SecondLang,
+                        Translates = translates
+                    };
+
+                    if (selectedGroup.GroupCode != null)
+                    {
+                        groupShare.GroupCode = selectedGroup.GroupCode;
+                        UpdateGroupShare(groupShare);
+                    }
+                    else
+                    {
+                        groupShare.GroupCode = ff.GenereteGroupShareCode();
+                        UploadGroupShare(groupShare, selectedGroup);
+                    }
+                }
+            }
+            else
+            {
+                DisplayAlert("Chyba", "K přenosu skupiny musíte mít ve skupině alespoň jeden překlad!", "Ok");
+            }
+        }
+
+        public async void UploadGroupShare(GroupShare groupShare, Group selectedGroup)
+        {
+            while (true)
+            {
+                var document = await CrossCloudFirestore.Current
+                                        .Instance
+                                        .Collection("groups")
+                                        .Document(groupShare.GroupCode)
+                                        .GetAsync();
+
+                if (document.Exists)
+                {
+                    groupShare.GroupCode = ff.GenereteGroupShareCode();
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            await CrossCloudFirestore.Current
+                    .Instance
+                    .Collection("groups")
+                    .Document(groupShare.GroupCode)
+                    .SetAsync(groupShare);
+
+            using (SQLiteConnection conn = new SQLiteConnection(App.DatabaseLocation))
+            {
+                conn.CreateTable<Group>();
+                selectedGroup.GroupCode = groupShare.GroupCode;
+                int rows = conn.Update(selectedGroup);
+                if (rows > 0) { }
+            }
+
+            Navigation.PushAsync(new QRCodeGenerator(groupShare));
+        }
+
+        public async void UpdateGroupShare(GroupShare groupShare)
+        {
+            await CrossCloudFirestore.Current
+                         .Instance
+                         .Collection("groups")
+                         .Document(groupShare.GroupCode)
+                         .UpdateAsync(groupShare);
+
+            Navigation.PushAsync(new QRCodeGenerator(groupShare));
         }
     }
 }
